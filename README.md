@@ -1,6 +1,6 @@
 # My Quarkus Project
 
-This is a simple downstream guide to help you get started with building your first Quarkus project. This guide assumes you have no experience in Maven, Docker, GraalVM or Quarkus. You need at least basic understanding of Java, Git
+This is a more detailed downstream guide to help you get started with building your first Quarkus project. This guide assumes you have no experience in Maven, Docker, GraalVM or Quarkus. You need at least basic understanding of any IDE, Java, Git & Bash
 
 Most of the steps are forked from [here.](https://quarkus.io/get-started/)
 
@@ -54,11 +54,44 @@ Next step for me was to build a native executable, but you can skip this part if
 
 Additional requirements:
 - Container runtime (Docker)
-- GraalVM (Mandrel recommended)
+- GraalVM (CE recommended)
 
 ### 1. Download, install & learn [Docker](https://www.docker.com/)
 If you are new to Docker, no worries! As Docker states in their tutorial: The best way to learn about containers is to first see it in action. I am using [Docker desktop](https://www.docker.com/products/docker-desktop/). Fire up Docker Desktop, and complete the following tutorials: "What is a container?", "How do I run a container?"
 
-### 2. [Download](https://github.com/graalvm/mandrel/releases), install & [configure](https://quarkus.io/guides/building-native-image#configuring-graalvm) GraalVM (Mandrel)
+### 2. Install GraalVM (CE)
 
+I recommend using SDKMAN for this. I used this command to install latest GraalVM CE.
+```
+sdk install java 21-graalce
+```
+### 3. Clone getting-started from [quarkus-quickstarts](https://github.com/quarkusio/quarkus-quickstarts)
 
+```
+git clone https://github.com/quarkusio/quarkus-quickstarts.git
+```
+
+### 3. Build a native executable in getting-started
+
+```
+quarkus build --native
+```
+
+### 4. Test the native executable
+```
+./mvnw verify -Dnative
+```
+
+### 5. Create a docker image
+
+```
+./mvnw package -Dnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true
+```
+Build the image:
+```
+docker build -f src/main/docker/Dockerfile.native-micro -t quarkus-quickstart/getting-started .
+```
+Run the image:
+```
+docker run -i --rm -p 8080:8080 quarkus-quickstart/getting-started
+```
